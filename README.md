@@ -1,10 +1,13 @@
 **Arc Reaction** is a minimal framework (more of a library) for writing RESTful web applications. It was inspired by Paul Graham's Arc programming language.
 
-ArcReactions answer to the Arc challenge:
+ArcReactions answer to the [Arc challenge](http://paulgraham.com/arcchallenge.html).
 
     using ArcReaction;
 	
-	public ControlPoint GetRoot(HttpContextEx context)
+	public sealed class AppRouter : Router
 	{
-		return new Form(c => new A("Click here", new P("You said " + c["said"])), new TextInput("said"), new Submit());
+		public override ControlPoint GetRoot(HttpContextEx context)
+		{
+			return new Form(c => new A("Click here", new P("You said " + c["said"])), new TextInput("said"), new Submit());
+		}
 	}
