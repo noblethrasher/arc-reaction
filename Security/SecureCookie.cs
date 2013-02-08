@@ -12,7 +12,7 @@ namespace ArcReaction
     {
         public static SecureCookie Decrypt(this HttpCookie cookie)
         {
-            return new NonEncryptedCookie(cookie);
+            return cookie == null ? null : new NonEncryptedCookie(cookie);
         }
     }
     
