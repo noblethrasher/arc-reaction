@@ -5,16 +5,27 @@ namespace ArcReaction
     public sealed class AdhocHttpHandler : IHttpHandler
     {
         readonly Action<HttpContext> processRequest;
+        readonly int status = 200;
         
-        public AdhocHttpHandler(Action<HttpContext> processRequest)
+        private AdhocHttpHandler(int status)
+        {
+            this.status = status;
+        }
+
+        public AdhocHttpHandler(Action<HttpContext> processRequest, int status) : this(status)
         {
             this.processRequest = processRequest;
         }
 
-        public AdhocHttpHandler(string str)
+        public AdhocHttpHandler(Action<HttpContext> processRequest) : this(processRequest, 200) { }
+
+        public AdhocHttpHandler(string str, int status) : this(status)
         {
             this.processRequest = c => c.Response.Write(str);
+
         }
+
+        public AdhocHttpHandler(string str) : this(str, 200) { }
 
         public bool IsReusable
         {

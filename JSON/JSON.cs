@@ -161,6 +161,9 @@ namespace ArcReaction
                 if (type == typeof(bool))
                     return s.ToLower();
 
+                if(type.IsSubclassOf(typeof(JSON)))
+                    return value.ToString();
+
                 return MakeSafeString(s);
             }
 
@@ -282,9 +285,9 @@ namespace ArcReaction
 
         public void ProcessRequest(HttpContext context)
         {
-            context.Response.ContentType = "text/json";
+            context.Response.AddHeader("Content-Type", "application/json");
             context.Response.AddHeader("Content-Disposition", "inline");
-            context.Response.Write("while(1);" + this.ToString());
+            context.Response.Write(this.ToString());
         }
 
         public void AddScalar(string name, object value)
@@ -337,7 +340,7 @@ namespace ArcReaction
         public override string ToString(int n)
         {
             if (json_objs.Length == 0)
-                return "[]";
+                return "new Array()";
             
             var sb = new StringBuilder();
 

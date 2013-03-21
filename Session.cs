@@ -5,10 +5,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Prelude;
 
 namespace ArcReaction
 {
-    public abstract class Session : ControlPoint
+    public abstract class Session : AppState
     {
         static Dictionary<string, Func<string, Session>> sessionFactories = new Dictionary<string, Func<string, Session>>();
         static readonly byte key_length = 3;
@@ -45,8 +46,8 @@ namespace ArcReaction
 
         static Func<char>[] random_chars = new[] { (Func<char>)GetRandomLowerCaseLetter, GetRandomUpperCaseLetter, GetRandomDigit };
 
-        public abstract ControlPoint Next(Message msg);
-        public abstract IHttpHandler GetHandler(HttpContextEx context);
+        public abstract AppState Next(Message msg);
+        public abstract IHttpHandler GetRepresentation(HttpContextEx context);
 
         static Random random = new Random();
 
@@ -114,19 +115,17 @@ namespace ArcReaction
         }
 
         Func<HttpContextEx, IHttpHandler> get_handler;
-        Func<Message, ControlPoint> get_controlPoint;
+        Func<Message, AppState> get_controlPoint;
         readonly string key;
-
        
         public OneTimeUseControlPoint(IHttpHandler handler) : this(c => handler, null) { }
         
-        public OneTimeUseControlPoint(IHttpHandler handler, ControlPoint next) : this(c => handler, m => next) { }
-        public OneTimeUseControlPoint(ControlPoint control) : this(control.GetHandler, control.Next) { }
+        public OneTimeUseControlPoint(IHttpHandler handler, AppState next) : this(c => handler, m => next) { }
+        public OneTimeUseControlPoint(AppState control) : this(control.GetRepresentation, control.Next) { }
 
         public OneTimeUseControlPoint(Func<HttpContextEx, IHttpHandler> handler_factory) : this(handler_factory, null) { }
 
-
-        public OneTimeUseControlPoint(Func<HttpContextEx, IHttpHandler> handler_factory, Func<Message, ControlPoint> next)
+        public OneTimeUseControlPoint(Func<HttpContextEx, IHttpHandler> handler_factory, Func<Message, AppState> next)
         {
             get_handler = handler_factory;
             get_controlPoint = next;
@@ -145,12 +144,12 @@ namespace ArcReaction
             this.key = key;   
         }
 
-        public override ControlPoint Next(Message msg)
+        public override AppState Next(Message msg)
         {
             return get_controlPoint != null ? get_controlPoint(msg) : null;
         }
 
-        public override IHttpHandler GetHandler(HttpContextEx context)
+        public override IHttpHandler GetRepresentation(HttpContextEx context)
         {
             return get_handler(context);
         }

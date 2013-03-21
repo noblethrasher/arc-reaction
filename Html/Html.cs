@@ -65,7 +65,7 @@ namespace ArcReaction
         }
     }
     
-    public abstract class HTMLElement : IEquatable<HTMLElement>, IHttpHandler, ControlPoint
+    public abstract class HTMLElement : IEquatable<HTMLElement>, IHttpHandler, AppState
     {
         protected readonly string tag_name;
         protected readonly bool self_closing;
@@ -85,6 +85,7 @@ namespace ArcReaction
 
         HTMLAttribute id;
         HTMLAttribute disabled;
+        HTMLAttribute @class;
 
         public HTMLElement(string tag_name, IEnumerable<HTMLElement> xs, bool self_closing)
         {
@@ -93,6 +94,7 @@ namespace ArcReaction
             
             non_removable_attributes.Add(id = new DefaultHtmlAttribueImpl("id"));
             non_removable_attributes.Add(disabled = new DefaultHtmlAttribueImpl("disabled"));
+            non_removable_attributes.Add(@class = new DefaultHtmlAttribueImpl("class"));
 
             if(xs != null)
                 AddRange(xs);
@@ -122,6 +124,20 @@ namespace ArcReaction
             {
                 id.Value = value;
             }
+        }
+
+        public string ClassName
+        {
+
+            get
+            {
+                return @class.Value;
+            }
+            set
+            {
+                @class.Value = value;
+            }
+
         }
 
         public bool Disabled
@@ -302,12 +318,12 @@ namespace ArcReaction
             context.Response.Write(this.ToString());
         }
 
-        public ControlPoint Next(Message msg)
+        public AppState Next(Message msg)
         {
             return null;
         }
 
-        public IHttpHandler GetHandler(HttpContextEx context)
+        public IHttpHandler GetRepresentation(HttpContextEx context)
         {
             return this;
         }
@@ -414,7 +430,7 @@ namespace ArcReaction
                 Text = text;
         }
 
-        public A(string text, ControlPoint p)
+        public A(string text, AppState p)
             : this(text, "/x/" + new OneTimeUseControlPoint(p).Key)
         {
 
@@ -497,6 +513,7 @@ namespace ArcReaction
     {
         public UL() : base("ul") { }
         public UL(IEnumerable<LI> xs) : base("ul", xs) { }
+        public UL(IEnumerable<object> xs) : this(xs.Select(x => new LI(x.ToString()))) { }
     }
 
     public sealed class OL : HTMLElement
@@ -873,6 +890,15 @@ namespace ArcReaction
             {
                 this.value.Value = value;
             }
+        }
+    }
+
+    public class AntiForgery : InputElement
+    {
+        public AntiForgery()
+            : base("ANTIFORGERY", "", "hidden")
+        {
+            
         }
     }
 

@@ -11,8 +11,10 @@ using System.Web;
 
 namespace ArcReaction
 {
-    public sealed class ImageText : ControlPoint, IHttpHandler
+    public sealed class ImageText : AppState, IHttpHandler
     {
+        const StringComparison IGNORE_CASE = StringComparison.OrdinalIgnoreCase;
+        
         static readonly Regex hexPattern = new Regex("([0-9]|[A-F]){6}|([0-9]|[A-F]){3}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         static readonly Regex rgbPattern = new Regex("(0|1)[0-9]{2}|2([0-4][0-9]|5[0-5]),(0|1)[0-9]{2}|2([0-4][0-9]|5[0-5]),(0|1)[0-9]{2}|2([0-4][0-9]|5[0-5])", RegexOptions.Compiled);
 
@@ -176,12 +178,12 @@ namespace ArcReaction
             }
         }
         
-        public ControlPoint Next(Message msg)
+        public AppState Next(Message msg)
         {
             return null;
         }
 
-        public System.Web.IHttpHandler GetHandler(HttpContextEx context)
+        public System.Web.IHttpHandler GetRepresentation(HttpContextEx context)
         {
             return this;
         }
@@ -205,27 +207,25 @@ namespace ArcReaction
             FontFamily fontFamily;
             sbyte size;
 
-
             var styles = context.Request.QueryString["v"] ?? "REGULAR";
-
 
             FontStyle fontStyle = 0;
 
             foreach (var style in styles.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries))
             {
-                if (style.Equals("regular", StringComparison.OrdinalIgnoreCase))
+                if (style.Equals("regular", IGNORE_CASE))
                     fontStyle |= FontStyle.Regular;
 
-                if (style.Equals("bold", StringComparison.OrdinalIgnoreCase))
+                if (style.Equals("bold", IGNORE_CASE))
                     fontStyle |= FontStyle.Bold;
 
-                if (style.Equals("italic", StringComparison.OrdinalIgnoreCase))
+                if (style.Equals("italic", IGNORE_CASE))
                     fontStyle |= FontStyle.Italic;
 
-                if (style.Equals("strikeout", StringComparison.OrdinalIgnoreCase))
+                if (style.Equals("strikeout", IGNORE_CASE))
                     fontStyle |= FontStyle.Strikeout;
 
-                if (style.Equals("underline", StringComparison.OrdinalIgnoreCase))
+                if (style.Equals("underline", IGNORE_CASE))
                     fontStyle |= FontStyle.Underline;
             }
 

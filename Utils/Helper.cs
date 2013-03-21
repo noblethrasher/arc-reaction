@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml.Linq;
 
 namespace ArcReaction
 {
-    public class ModelError : IEnumerable<ValidationError>
+    public class ModelError : Exception, IEnumerable<ValidationError>
     {
         IEnumerable<ValidationError> errors;
 
-        private ModelError(IEnumerable<ValidationError> errors)
+        private ModelError(IEnumerable<ValidationError> errors) : base(string.Join("\r\n", errors))
         {
             this.errors = errors;
         }
@@ -37,13 +38,16 @@ namespace ArcReaction
 
     public abstract class ValidationError
     {
-
+        public abstract override string ToString();
     }
 
+
+    /// <summary>
+    /// The purpose of the ModelState type is to guard against and track errors that result from converting a set of user inputs (strings) into a set of strongly typed model attributes.
+    /// </summary>
     public sealed class ModelState : IEnumerable<ValidationError>
     {
         bool is_valid = true;
-
         
         [ThreadStatic]
         static Stack<ModelError> errors;
@@ -113,13 +117,21 @@ namespace ArcReaction
         }
     }
 
+   
     public abstract class HttpFieldValidationError : ValidationError
     {
         readonly string key;
+        readonly string message;
 
         public HttpFieldValidationError(string key, string message)
         {
             this.key = key;
+            this.message = message;
+        }
+
+        public override string ToString()
+        {
+            return message + " " + key;
         }
     }
 
@@ -168,6 +180,42 @@ namespace ArcReaction
             return n;
         }
 
+        public static byte GetByte(this HttpContextEx context, string key, ref ModelState state)
+        {
+            byte n = 0;
+
+            string s = null;
+
+            if (!byte.TryParse(s = context.Request.Form[key], out n))
+                state.AddError(s == null ? (HttpFieldValidationError)new NullValueError(key) : new InvalidIntegerFormatError(key));
+
+            return n;
+        }
+
+
+        public static byte? MaybeGetByte(this HttpContextEx context, string key)
+        {
+            byte n;
+
+            if (byte.TryParse(key, out n))
+                return n;
+            else
+                return null;
+
+        }
+
+
+        public static Int16? MaybeGetInt16(this HttpContextEx context, string key)
+        {
+            Int16 n;
+
+            if (Int16.TryParse(key, out n))
+                return n;
+            else
+                return null;
+
+        }
+
         public static int? MaybeGetInt32(this HttpContextEx context, string key)
         {
             int n;
@@ -178,6 +226,9 @@ namespace ArcReaction
                 return null;
             
         }
+
+
+
 
         public static DateTime GetDateTime(this HttpContextEx context, string key, ref ModelState state)
         {
@@ -227,6 +278,19 @@ namespace ArcReaction
             var s = context.Request.Form[key];
 
             return s;
+        }
+
+        public static XDocument GetXML(this HttpContextEx context, string key, ref ModelState model)
+        {
+            var s = context.Request.Form[key];
+
+            if (s == null)
+            {
+                model.AddError(new NullValueError(key));
+                return null;
+            }
+
+            return XDocument.Parse(s);
         }
 
 

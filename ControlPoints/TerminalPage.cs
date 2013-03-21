@@ -7,13 +7,13 @@ using System.Web;
 
 namespace ArcReaction
 {
-    public abstract class TerminalPage : ControlPoint
+    public abstract class TerminalPage : AppState
     {
-        public ControlPoint Next(Message msg)
+        public AppState Next(Message msg)
         {
             return null;
         }
 
-        public abstract IHttpHandler GetHandler(HttpContextEx context);
+        public abstract IHttpHandler GetRepresentation(HttpContextEx context);
     }
 }

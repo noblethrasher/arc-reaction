@@ -43,7 +43,7 @@ namespace ArcReaction
 
         public static implicit operator string(Message msg)
         {
-            return comparison  == StringComparison.OrdinalIgnoreCase ? msg.message.ToLower() : msg.message;
+            return msg.ToString();
         }
 
         public static bool operator ==(Message msg, string s)
@@ -64,6 +64,11 @@ namespace ArcReaction
         public override bool Equals(object obj)
         {
             return base.Equals(obj);
+        }
+
+        public override string ToString()
+        {
+            return comparison == StringComparison.OrdinalIgnoreCase ? message.ToLower() : message;
         }
     }    
 }

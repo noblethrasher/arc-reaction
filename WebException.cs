@@ -12,7 +12,7 @@ namespace ArcReaction
         public abstract IHttpHandler GetHandler(HttpContextEx context);
     }
 
-    public abstract class Error400 : ControlPoint
+    public abstract class Error400 : AppState
     {
         protected readonly int status;
 
@@ -21,12 +21,12 @@ namespace ArcReaction
             this.status = status;
         }
 
-        public ControlPoint Next(Message msg)
+        public AppState Next(Message msg)
         {
             return this;
         }
 
-        public abstract IHttpHandler GetHandler(HttpContextEx context);        
+        public abstract IHttpHandler GetRepresentation(HttpContextEx context);        
     }
 
     public sealed class ResourceNotFound : Error400, IHttpHandler
@@ -37,7 +37,7 @@ namespace ArcReaction
 
         }
         
-        public override IHttpHandler GetHandler(HttpContextEx context)
+        public override IHttpHandler GetRepresentation(HttpContextEx context)
         {
             return this;
         }

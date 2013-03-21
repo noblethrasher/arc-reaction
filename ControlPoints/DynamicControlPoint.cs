@@ -7,7 +7,7 @@ using System.Web;
 
 namespace ArcReaction
 {
-    public sealed class ClosureControlPoint : ControlPoint
+    public sealed class ClosureControlPoint : AppState
     {
         readonly string key;
         
@@ -16,14 +16,14 @@ namespace ArcReaction
             this.key = key;
         }
         
-        public ControlPoint Next(Message msg)
+        public AppState Next(Message msg)
         {
             //here we ignore the msg parameter because we want guaranteed case sensitivity
             
             return Session.Retrieve(key);
         }
 
-        public System.Web.IHttpHandler GetHandler(HttpContextEx context)
+        public System.Web.IHttpHandler GetRepresentation(HttpContextEx context)
         {
             return (AdhocHttpHandler) (c =>
             {

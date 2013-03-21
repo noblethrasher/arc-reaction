@@ -7,8 +7,8 @@
     <ProjectGuid>{A9F849B2-90C0-46BA-83C9-0B0F71F25F1D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RestPoint</RootNamespace>
-    <AssemblyName>RestPoint</AssemblyName>
+    <RootNamespace>ArcReaction</RootNamespace>
+    <AssemblyName>ArcReaction</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -62,7 +62,9 @@
     <Compile Include="Security\SecurityUtils.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="Utils\Helper.cs" />
-    <Compile Include="Views\ViewBase.cs" />
+    <Compile Include="Views\ViewBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="WebException.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Router.cs" />

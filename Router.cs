@@ -36,14 +36,14 @@ namespace ArcReaction
             }
         }
 
-        protected abstract ControlPoint GetRoot(HttpContextEx context);
+        protected abstract AppState GetRoot(HttpContextEx context);
 
         protected virtual RouteVerdict GetRouteVerdict(HttpContextEx context)
         {
             return new DefaultRouteVerdict(context);
         }
 
-        protected virtual ControlPoint TranslateNull(HttpContextEx context)
+        protected virtual AppState TranslateNull(HttpContextEx context)
         {
             return new ResourceNotFound();
         }
@@ -80,7 +80,7 @@ namespace ArcReaction
 
                     }                    
                     
-                    context.RemapHandler(controlPoint.GetHandler(context));
+                    context.RemapHandler(controlPoint.GetRepresentation(context));
                 }
                 catch (WebException ex)
                 {

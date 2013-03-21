@@ -8,7 +8,7 @@ using System.Web;
 
 namespace ArcReaction
 {
-    public class View : IHttpHandler
+    public sealed class View : IHttpHandler
     {
         readonly string path;
         bool is_resuable;
@@ -30,5 +30,10 @@ namespace ArcReaction
         {
             ("views/" + path + ".aspx").GetCompiledPageInstance().ProcessRequest(context);
         }
+    }
+
+    public abstract class ViewPage<T> : System.Web.UI.Page
+    {
+        public T Model { get; set; }
     }
 }

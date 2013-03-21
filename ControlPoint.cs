@@ -7,9 +7,9 @@ using System.Web;
 
 namespace ArcReaction
 {
-    public interface ControlPoint
+    public interface AppState
     {
-        ControlPoint Next(Message msg);
-        IHttpHandler GetHandler(HttpContextEx context);
+        AppState Next(Message msg);
+        IHttpHandler GetRepresentation(HttpContextEx context);
     }    
 }

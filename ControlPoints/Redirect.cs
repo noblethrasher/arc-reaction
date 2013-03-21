@@ -7,7 +7,7 @@ using System.Web;
 
 namespace ArcReaction
 {
-    public sealed class RedirectToOther : ControlPoint, IHttpHandler
+    public sealed class RedirectToOther : AppState, IHttpHandler
     {
         readonly string path;
 
@@ -16,12 +16,12 @@ namespace ArcReaction
             this.path = path;
         }
         
-        public ControlPoint Next(Message msg)
+        public AppState Next(Message msg)
         {
             return this;
         }
 
-        public System.Web.IHttpHandler GetHandler(HttpContextEx context)
+        public System.Web.IHttpHandler GetRepresentation(HttpContextEx context)
         {
             return this;
         }
