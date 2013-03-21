@@ -8,7 +8,7 @@ ArcReaction's answer to the [Arc challenge](http://paulgraham.com/arcchallenge.h
 	
 	public sealed class AppRouter : Router
 	{
-		public override ControlPoint GetRoot(HttpContextEx context)
+		public override AppState GetRoot(HttpContextEx context)
 		{
 			return new Form(c => 
 				new A("Click here", new P("You said " + c["said"])), 
